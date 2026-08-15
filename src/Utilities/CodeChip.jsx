@@ -24,6 +24,7 @@ export default function CodeChip({
       type: 'x,y',
       cursor: 'grab',
       activeCursor: 'grabbing',
+      allowEventDefault: true,
       onPress: function () {
         if (chipRef.current) {
           chipRef.current.style.zIndex = 9999;
@@ -53,10 +54,11 @@ export default function CodeChip({
         left: initialPos.left,
         zIndex: zIndex,
         position: 'absolute',
+        touchAction: 'none',
       }}
       className="select-none cursor-grab active:cursor-grabbing pointer-events-auto"
     >
-      <div className="glass-chip px-3.5 py-2 rounded-lg text-zinc-300 font-mono-code text-xs tracking-wider shadow-lg hover:text-[#D4FF00] hover:border-[#D4FF00]/50 transition-transform duration-200 hover:scale-105 active:scale-95 animate-float-bob">
+      <div className="glass-chip px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-md sm:rounded-lg text-zinc-300 font-mono-code text-[10px] sm:text-xs tracking-wider shadow-lg hover:text-[#D4FF00] hover:border-[#D4FF00]/50 transition-transform duration-200 hover:scale-105 active:scale-95 animate-float-bob whitespace-nowrap">
         {code}
       </div>
     </div>

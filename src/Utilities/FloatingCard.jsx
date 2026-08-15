@@ -26,6 +26,7 @@ export default function FloatingCard({
       type: 'x,y',
       cursor: 'grab',
       activeCursor: 'grabbing',
+      allowEventDefault: true,
       onPress: function () {
         if (cardRef.current) {
           cardRef.current.style.zIndex = 9999;
@@ -55,22 +56,23 @@ export default function FloatingCard({
         left: initialPos.left,
         zIndex: zIndex,
         position: 'absolute',
+        touchAction: 'none',
       }}
       className="select-none cursor-grab active:cursor-grabbing pointer-events-auto"
     >
-      <div className="glass-card px-5 py-4 rounded-xl flex items-center space-x-4 shadow-2xl transition-transform duration-200 hover:scale-105 active:scale-95 group animate-float-bob">
+      <div className="glass-card px-3 py-2 sm:px-5 sm:py-4 rounded-lg sm:rounded-xl flex items-center space-x-2.5 sm:space-x-4 shadow-2xl transition-transform duration-200 hover:scale-105 active:scale-95 group animate-float-bob">
         {Icon && (
-          <div className="w-10 h-10 rounded-lg bg-[#D4FF00]/10 border border-[#D4FF00]/40 flex items-center justify-center text-[#D4FF00] group-hover:bg-[#D4FF00]/20 transition-colors shadow-[0_0_10px_rgba(212,255,0,0.15)]">
-            <Icon className="w-5 h-5" />
+          <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-lg bg-[#D4FF00]/10 border border-[#D4FF00]/40 flex items-center justify-center text-[#D4FF00] group-hover:bg-[#D4FF00]/20 transition-colors shadow-[0_0_10px_rgba(212,255,0,0.15)] shrink-0">
+            <Icon className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
           </div>
         )}
 
         <div>
-          <div className="font-display font-extrabold text-base md:text-lg text-white tracking-wide flex items-center space-x-2">
+          <div className="font-display font-extrabold text-xs sm:text-base md:text-lg text-white tracking-wide flex items-center space-x-2 whitespace-nowrap">
             <span>{title}</span>
           </div>
           {subtitle && (
-            <div className="font-mono-code text-[10px] tracking-widest text-[#D4FF00]/80 uppercase mt-0.5">
+            <div className="font-mono-code text-[9px] sm:text-[10px] tracking-widest text-[#D4FF00]/80 uppercase mt-0.5 whitespace-nowrap">
               {subtitle}
             </div>
           )}

@@ -46,13 +46,11 @@ const ScrambleText = ({ text, isHovered }) => {
             .split('')
             .map((char) => {
               if (char === ' ') return ' ';
-              // Randomly replace ~15% of characters with '|' to match the effect
               return Math.random() > 0.85 ? '|' : char;
             })
             .join('')
         );
 
-        // Clear the effect after a short duration (e.g., 15 ticks * 30ms = 450ms)
         if (ticks > 15) {
           clearInterval(intervalRef.current);
           setDisplayText(text);
@@ -91,14 +89,12 @@ function MilestoneCard({ milestone }) {
   };
 
   const handleMouseMove = (e) => {
-    if (!cardRef.current) return;
+    if (!cardRef.current || window.innerWidth < 768) return;
     const rect = cardRef.current.getBoundingClientRect();
     
-    // Position inside card relative to center (-0.5 to 0.5)
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
 
-    // Tilt angle max 12-15deg
     const maxTilt = 12;
     const rotateX = -(y / (rect.height / 2)) * maxTilt;
     const rotateY = (x / (rect.width / 2)) * maxTilt;
@@ -122,8 +118,7 @@ function MilestoneCard({ milestone }) {
           : 'transform 0.5s ease-out, box-shadow 0.5s ease-out',
         transformStyle: 'preserve-3d',
       }}
-      // Changed cursor-pointer to cursor-crosshair to match the video
-      className="relative p-7 md:p-8 bg-[#111215] hover:bg-[#15161b] flex flex-col justify-between group rounded-sm overflow-hidden cursor-crosshair gpu-accelerated"
+      className="relative p-5 sm:p-7 md:p-8 bg-[#111215] hover:bg-[#15161b] flex flex-col justify-between group rounded-sm overflow-hidden cursor-crosshair gpu-accelerated"
     >
       {/* Yellow Corner Ticks (┌ and ┘ in #CCFF00) ONLY APPEAR ON HOVER */}
       <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[#CCFF00] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20" />
@@ -132,18 +127,18 @@ function MilestoneCard({ milestone }) {
       <div className="relative z-20">
         {/* Milestone Tag */}
         <div
-          className={`font-mono-code text-xs font-bold tracking-widest uppercase mb-4 ${milestone.tagColor}`}
+          className={`font-mono-code text-[11px] sm:text-xs font-bold tracking-widest uppercase mb-3 sm:mb-4 ${milestone.tagColor}`}
         >
           {milestone.tag}
         </div>
 
         {/* Milestone Title */}
-        <h3 className="font-display font-black text-xl md:text-2xl text-white tracking-tight uppercase leading-tight mb-4 group-hover:text-cyan-300 transition-colors">
+        <h3 className="font-display font-black text-lg sm:text-xl md:text-2xl text-white tracking-tight uppercase leading-tight mb-3 sm:mb-4 group-hover:text-cyan-300 transition-colors">
           {milestone.title}
         </h3>
 
         {/* Milestone Description with Scramble Effect */}
-        <p className="font-mono-code text-xs md:text-sm text-zinc-300 leading-relaxed">
+        <p className="font-mono-code text-xs sm:text-sm text-zinc-300 leading-relaxed">
           <ScrambleText text={milestone.description} isHovered={isHovered} />
         </p>
       </div>
@@ -163,22 +158,22 @@ export default function Experience({ isModal = false, onClose }) {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-[#050507] text-white p-6 md:p-12 lg:p-16 flex flex-col justify-between overflow-x-hidden select-none">
+    <div className="relative min-h-screen w-full bg-[#050507] text-white p-5 sm:p-8 md:p-12 lg:p-16 flex flex-col justify-between overflow-x-hidden select-none">
       {/* Top Navbar if viewed as main page */}
       {!isModal && <Navbar />}
 
       {/* Dark Tactical Grain Noise Texture Overlay */}
       <div className="absolute inset-0 bg-noise-pattern pointer-events-none opacity-100 z-0" />
-      <div className="absolute top-1/3 left-10 w-96 h-96 rounded-full bg-cyan-500/5 blur-[160px] pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-[#CCFF00]/5 blur-[160px] pointer-events-none" />
+      <div className="absolute top-1/3 left-10 w-72 sm:w-96 h-72 sm:h-96 rounded-full bg-cyan-500/5 blur-[160px] pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-72 sm:w-96 h-72 sm:h-96 rounded-full bg-[#CCFF00]/5 blur-[160px] pointer-events-none" />
 
       {/* Top Header Row with Title & Bright Neon Close Button */}
-      <div className="relative z-10 pt-16 md:pt-20 flex items-start justify-between">
+      <div className="relative z-10 pt-16 sm:pt-20 flex items-start justify-between">
         <div>
-          <h1 className="font-display font-black text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight uppercase text-white leading-none">
+          <h1 className="font-display font-black text-3xl sm:text-5xl md:text-7xl lg:text-8xl tracking-tight uppercase text-white leading-none">
             ABREONIX
           </h1>
-          <p className="font-mono-code text-cyan-400 font-semibold text-lg sm:text-xl md:text-2xl mt-2 tracking-wide">
+          <p className="font-mono-code text-cyan-400 font-semibold text-base sm:text-xl md:text-2xl mt-1.5 sm:mt-2 tracking-wide">
             Developer Intern
           </p>
         </div>
@@ -186,16 +181,16 @@ export default function Experience({ isModal = false, onClose }) {
         {/* Square Neon Lime Close Button */}
         <button
           onClick={handleClose}
-          className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-[#CCFF00] hover:bg-[#bce400] text-black font-extrabold flex items-center justify-center transition-transform hover:scale-110 active:scale-95 cursor-pointer shadow-[0_0_20px_rgba(204,255,0,0.3)] shrink-0 ml-4 z-50"
+          className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg bg-[#CCFF00] hover:bg-[#bce400] text-black font-extrabold flex items-center justify-center transition-transform hover:scale-110 active:scale-95 cursor-pointer shadow-[0_0_20px_rgba(204,255,0,0.3)] shrink-0 ml-4 z-50"
           title="Close / Back to Home"
         >
-          <X className="w-6 h-6 stroke-[3]" />
+          <X className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
         </button>
       </div>
 
       {/* Middle Section: 3D Magnetic Tilt Milestone Cards */}
-      <div className="relative z-10 my-12 lg:my-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto">
+      <div className="relative z-10 my-8 sm:my-12 lg:my-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
           {MILESTONES.map((milestone) => (
             <MilestoneCard key={milestone.id} milestone={milestone} />
           ))}
@@ -203,7 +198,7 @@ export default function Experience({ isModal = false, onClose }) {
       </div>
 
       {/* Bottom Footer Watermark */}
-      <div className="relative z-10 flex items-center justify-between text-zinc-600 font-mono-code text-xs uppercase tracking-widest">
+      <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between text-zinc-600 font-mono-code text-[11px] sm:text-xs uppercase tracking-widest space-y-2 sm:space-y-0">
         <span>01 EXPLORED</span>
         <span>ABREONIX // INTERNSHIP</span>
       </div>
