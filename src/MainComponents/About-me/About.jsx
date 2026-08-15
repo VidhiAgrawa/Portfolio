@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
 
-const TECH_CHIPS = ['NEXT.JS', 'REACT', 'JAVA', 'DSA', 'FRAMER MOTION'];
+const TECH_CHIPS = ['JAVASCRIPT', 'REACT.JS', 'NODE.JS', 'J2SE', 'DSA', 'MONGODB', 'EXPRESS.JS', 'HTML5 & CSS3', 'GIT & GITHUB', 'TYPESCRIPT', 'TAILWIND CSS', 'FIGMA', 'FRAMER MOTION', 'GSAP'];
 
 const TICKER_ITEMS = [
   'GIT & GITHUB',
@@ -15,7 +15,7 @@ const TICKER_ITEMS = [
   'MONGODB',
   'EXPRESS.JS',
   'TAILWIND CSS',
-  'JAVA CORE',
+  'J2SE',
   'DSA',
   'TYPESCRIPT',
   'GSAP',
@@ -27,6 +27,7 @@ export default function About() {
   const imgRef = useRef(null);
 
   const [isHovered, setIsHovered] = useState(false);
+  const isHoveredRef = useRef(false);
 
   // High-performance direct DOM tracking for mouse cursor (0% React re-render overhead)
   const mousePosRef = useRef({ x: 300, y: 250, targetX: 300, targetY: 250 });
@@ -37,7 +38,7 @@ export default function About() {
     img.src = '/about_portrait.jpg';
   }, []);
 
-  // 120 FPS requestAnimationFrame lerp loop
+  // Continuous 120 FPS requestAnimationFrame lerp loop (Direct DOM style mutation)
   useEffect(() => {
     let animId;
     const updatePosition = () => {
@@ -55,29 +56,37 @@ export default function About() {
     return () => cancelAnimationFrame(animId);
   }, []);
 
-  const handleMouseMove = (e) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    mousePosRef.current.targetX = e.clientX - rect.left;
-    mousePosRef.current.targetY = e.clientY - rect.top;
-  };
-
-  const handleMouseEnter = (e) => {
-    if (cardRef.current) {
+  // Zero-re-render passive mouse tracking (React state is ONLY updated once on enter/exit)
+  useEffect(() => {
+    const handleGlobalMouseMove = (e) => {
+      if (!cardRef.current) return;
       const rect = cardRef.current.getBoundingClientRect();
-      const posX = e.clientX - rect.left;
-      const posY = e.clientY - rect.top;
-      mousePosRef.current.targetX = posX;
-      mousePosRef.current.targetY = posY;
-      mousePosRef.current.x = posX;
-      mousePosRef.current.y = posY;
-    }
-    setIsHovered(true);
-  };
 
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
+      const isInside =
+        e.clientX >= rect.left &&
+        e.clientX <= rect.right &&
+        e.clientY >= rect.top &&
+        e.clientY <= rect.bottom;
+
+      if (isInside) {
+        mousePosRef.current.targetX = e.clientX - rect.left;
+        mousePosRef.current.targetY = e.clientY - rect.top;
+
+        if (!isHoveredRef.current) {
+          isHoveredRef.current = true;
+          setIsHovered(true);
+        }
+      } else {
+        if (isHoveredRef.current) {
+          isHoveredRef.current = false;
+          setIsHovered(false);
+        }
+      }
+    };
+
+    window.addEventListener('mousemove', handleGlobalMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleGlobalMouseMove);
+  }, []);
 
   const duplicatedTicker = useMemo(() => [...TICKER_ITEMS, ...TICKER_ITEMS], []);
 
@@ -86,9 +95,6 @@ export default function About() {
       {/* Top Main Canvas Container */}
       <div
         ref={cardRef}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onMouseMove={handleMouseMove}
         onTouchStart={() => setIsHovered(true)}
         onTouchEnd={() => setIsHovered(false)}
         className="relative w-full max-w-7xl mx-auto px-4 sm:px-8 md:px-16 pt-6 sm:pt-10 pb-8 sm:pb-12 flex-1 flex flex-col justify-between group"
@@ -148,7 +154,7 @@ export default function About() {
             </h1>
 
             {/* Paragraph Body Text */}
-            <p className="font-mono-code text-xs sm:text-sm md:text-base md:text-gray-800 lg:text-gray-100 font-medium leading-relaxed max-w-2xl mb-6 sm:mb-8 text-left">
+            <p className="font-mono-code text-xs sm:text-sm md:text-base text-gray-100 font-medium leading-relaxed max-w-2xl mb-6 sm:mb-8 text-left">
               A dense, focused exploration of interactive web experiences. Driven by a deep passion for blurring the lines between design and engineering, combining the raw performance of Next.js and React with a robust, analytical foundation in Java and Data Structures. Every pixel is calculated; every motion is deliberate.
             </p>
 

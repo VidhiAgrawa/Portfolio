@@ -37,7 +37,7 @@ export default function Loading({ onComplete }) {
 
   useEffect(() => {
     let start = null;
-    const duration = 4000; // 4 seconds loading duration
+    const duration = 6000; // 6 seconds loading duration
 
     const animateProgress = (timestamp) => {
       if (!start) start = timestamp;
@@ -171,9 +171,9 @@ export default function Loading({ onComplete }) {
         <div className="relative flex flex-col items-center justify-center mb-16">
           
           {/* Minimalist Arc Ring */}
-          <div className="absolute w-[300px] h-[300px] sm:w-[420px] sm:h-[420px] rounded-full border border-zinc-800 pointer-events-none flex items-center justify-center">
+          {/* <div className="absolute w-[300px] h-[300px] sm:w-[420px] sm:h-[420px] rounded-full border border-zinc-800 pointer-events-none flex items-center justify-center">
             <div className="absolute w-full h-full rounded-full border-t border-r border-[#CCFF00] opacity-70 animate-spin" style={{ animationDuration: '3s' }} />
-          </div>
+          </div> */}
 
           {/* 💥 Typography Display (White Text 2x Larger than Neon Lime ERR) */}
           <div className="relative z-10 flex items-baseline justify-center whitespace-nowrap">
