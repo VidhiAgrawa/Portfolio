@@ -22,6 +22,7 @@ export default function Terminal() {
   const inputRef = useRef(null);
   const historyContainerRef = useRef(null);
 
+  const [isMobile, setIsMobile] = useState(false);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [currentInput, setCurrentInput] = useState('');
   const [formData, setFormData] = useState({
@@ -35,7 +36,17 @@ export default function Terminal() {
   const [currentTime, setCurrentTime] = useState('');
   const [viewsCount, setViewsCount] = useState(1);
 
-  // Dynamic View Counter tracking (Starts fresh from 0, increments ONCE per website visit session)
+  // Screen size detection for adaptive performance
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Dynamic View Counter tracking (Starts fresh from 1, increments ONCE per website visit session)
   useEffect(() => {
     try {
       const KEY = 'portfolio_site_views';
@@ -56,7 +67,7 @@ export default function Terminal() {
     }
   }, []);
 
-  // Mutating binary stream state
+  // Mutating binary stream state (Desktop: 90ms high-speed loop | Mobile: Static stream)
   const [binaryStream, setBinaryStream] = useState([
     '00011101',
     '10100100',
@@ -67,26 +78,33 @@ export default function Terminal() {
   ]);
 
   useEffect(() => {
+    if (isMobile) return; // Stop binary stream animation loop on mobile size
+
     const binaryInterval = setInterval(() => {
       setBinaryStream(Array.from({ length: 6 }, () => generateBinaryLine()));
-    }, 110);
+    }, 90);
 
     return () => clearInterval(binaryInterval);
-  }, []);
+  }, [isMobile]);
 
-  // Live High-Frequency Digital Clock (HH:MM:SS:MS)
+  // High-Frequency Digital Clock (Desktop: 40ms with milliseconds | Mobile: 1000ms seconds update)
   useEffect(() => {
+    const clockInterval = isMobile ? 1000 : 40;
     const timer = setInterval(() => {
       const now = new Date();
       const hh = String(now.getHours()).padStart(2, '0');
       const mm = String(now.getMinutes()).padStart(2, '0');
       const ss = String(now.getSeconds()).padStart(2, '0');
-      const ms = String(Math.floor(now.getMilliseconds() / 10)).padStart(2, '0');
-      setCurrentTime(`${hh}:${mm}:${ss}:${ms}`);
-    }, 40);
+      if (isMobile) {
+        setCurrentTime(`${hh}:${mm}:${ss}`);
+      } else {
+        const ms = String(Math.floor(now.getMilliseconds() / 10)).padStart(2, '0');
+        setCurrentTime(`${hh}:${mm}:${ss}:${ms}`);
+      }
+    }, clockInterval);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [isMobile]);
 
   // ESC Key listener for ABORT
   useEffect(() => {
@@ -194,11 +212,15 @@ export default function Terminal() {
       {/* Scanline Grid Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.5)_51%)] bg-[length:100%_4px] pointer-events-none opacity-60 z-10" />
 
-      {/* BACKGROUND HUD CONCENTRIC RADAR RETICLE (MOBILE RESPONSIVE DIMENSIONS) */}
+      {/* BACKGROUND HUD CONCENTRIC RADAR RETICLE (Rotates 360° on Large View / Stationary on Mobile) */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-        <div className="w-[340px] h-[340px] xs:w-[440px] xs:h-[440px] sm:w-[720px] sm:h-[720px] md:w-[840px] md:h-[840px] rounded-full border border-cyan-500/30 flex items-center justify-center relative animate-hud-spin gpu-accelerated">
-          <div className="w-[260px] h-[260px] xs:w-[320px] xs:h-[320px] sm:w-[540px] sm:h-[540px] md:w-[640px] md:h-[640px] rounded-full border-2 border-[#CCFF00]/40 flex items-center justify-center shadow-[0_0_50px_rgba(204,255,0,0.1)] border-dashed">
-            <div className="w-[180px] h-[180px] xs:w-[220px] xs:h-[220px] sm:w-[380px] sm:h-[380px] rounded-full border border-cyan-400/20" />
+        <div
+          className={`w-[320px] h-[340px] xs:w-[420px] xs:h-[420px] sm:w-[720px] sm:h-[720px] md:w-[840px] md:h-[840px] rounded-full border border-cyan-500/30 flex items-center justify-center relative gpu-accelerated ${
+            !isMobile ? 'animate-hud-spin' : ''
+          }`}
+        >
+          <div className="w-[240px] h-[260px] xs:w-[300px] xs:h-[320px] sm:w-[540px] sm:h-[540px] md:w-[640px] md:h-[640px] rounded-full border-2 border-[#CCFF00]/40 flex items-center justify-center shadow-[0_0_50px_rgba(204,255,0,0.1)] border-dashed">
+            <div className="w-[170px] h-[180px] xs:w-[200px] xs:h-[220px] sm:w-[380px] sm:h-[380px] rounded-full border border-cyan-400/20" />
           </div>
 
           {/* Crosshairs Lines */}

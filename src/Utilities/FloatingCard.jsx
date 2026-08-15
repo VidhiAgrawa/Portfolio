@@ -60,7 +60,7 @@ export default function FloatingCard({
       }}
       className="select-none cursor-grab active:cursor-grabbing pointer-events-auto"
     >
-      <div className="glass-card px-3 py-2 sm:px-5 sm:py-4 rounded-lg sm:rounded-xl flex items-center space-x-2.5 sm:space-x-4 shadow-2xl transition-transform duration-200 hover:scale-105 active:scale-95 group animate-float-bob">
+      <div className="glass-card px-3 py-2 sm:px-5 sm:py-4 rounded-lg sm:rounded-xl flex items-center space-x-2.5 sm:space-x-4 shadow-2xl transition-transform duration-200 hover:scale-105 active:scale-95 group md:animate-float-bob">
         {Icon && (
           <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-lg bg-[#D4FF00]/10 border border-[#D4FF00]/40 flex items-center justify-center text-[#D4FF00] group-hover:bg-[#D4FF00]/20 transition-colors shadow-[0_0_10px_rgba(212,255,0,0.15)] shrink-0">
             <Icon className="w-3.5 h-3.5 sm:w-5 sm:h-5" />

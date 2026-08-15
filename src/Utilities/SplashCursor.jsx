@@ -19,6 +19,7 @@ export default function SplashCursor({
   const canvasRef = useRef(null);
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
 

@@ -128,20 +128,6 @@ export default function About() {
             />
           </div>
 
-          {/* MOBILE CENTERED BACKDROP PORTRAIT IMAGE */}
-          <div
-            className={`md:hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] xs:w-[310px] h-[360px] xs:h-[400px] z-0 overflow-hidden shadow-xl rounded-xl pointer-events-none transition-all duration-400 ease-out ${
-              isHovered ? 'opacity-35 scale-100' : 'opacity-0 scale-95'
-            }`}
-          >
-            <img
-              src="/about_portrait.jpg"
-              alt="Portrait"
-              loading="eager"
-              className="w-full h-full object-cover filter grayscale contrast-125 brightness-90"
-            />
-          </div>
-
           {/* Centered Block with Left-Aligned Text Content */}
           <div className="relative z-10 max-w-4xl mx-auto text-left flex flex-col items-start px-2 sm:px-0">
             {/* Headline */}

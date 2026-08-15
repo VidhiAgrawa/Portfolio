@@ -58,7 +58,7 @@ export default function CodeChip({
       }}
       className="select-none cursor-grab active:cursor-grabbing pointer-events-auto"
     >
-      <div className="glass-chip px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-md sm:rounded-lg text-zinc-300 font-mono-code text-[10px] sm:text-xs tracking-wider shadow-lg hover:text-[#D4FF00] hover:border-[#D4FF00]/50 transition-transform duration-200 hover:scale-105 active:scale-95 animate-float-bob whitespace-nowrap">
+      <div className="glass-chip px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-md sm:rounded-lg text-zinc-300 font-mono-code text-[10px] sm:text-xs tracking-wider shadow-lg hover:text-[#D4FF00] hover:border-[#D4FF00]/50 transition-transform duration-200 hover:scale-105 active:scale-95 md:animate-float-bob whitespace-nowrap">
         {code}
       </div>
     </div>

@@ -131,18 +131,18 @@ export default function HomePage() {
       ref={containerRef}
       className="relative w-screen h-screen overflow-hidden bg-[#050507] text-white selection:bg-[#D4FF00] selection:text-black flex flex-col justify-between"
     >
-      {/* React Bits WebGL Splash Cursor Component */}
-      <SplashCursor {...activeSplashProps} />
+      {/* React Bits WebGL Splash Cursor Component (Disabled on Mobile) */}
+      {!isMobile && <SplashCursor {...activeSplashProps} />}
 
       {/* Top Navbar */}
       <Navbar />
 
       {/* Hero Section with Mobile Responsive Brutalist Parallax Typography */}
       <main className="relative flex-1 flex items-center justify-center pointer-events-none select-none px-4 sm:px-8 z-10">
-        {/* Ghosted Outlined Layer Behind */}
+        {/* Ghosted Outlined Layer Behind (Desktop Only) */}
         <div
           ref={backgroundRef}
-          className="absolute inset-0 flex flex-col items-center justify-center font-display font-black text-4xl sm:text-6xl md:text-8xl lg:text-[115px] xl:text-[135px] leading-[0.88] tracking-tight uppercase opacity-40 text-stroke-neon gpu-accelerated"
+          className="hidden md:flex absolute inset-0 flex-col items-center justify-center font-display font-black text-4xl sm:text-6xl md:text-8xl lg:text-[115px] xl:text-[135px] leading-[0.88] tracking-tight uppercase opacity-40 text-stroke-neon gpu-accelerated"
         >
           <div>VIDHI</div>
           <div>AGRAWAL</div>
@@ -153,7 +153,7 @@ export default function HomePage() {
         {/* Foreground Solid Neon Typography Layer */}
         <div
           ref={foregroundRef}
-          className="relative z-5 flex flex-col items-center justify-center font-display font-black text-4xl sm:text-6xl md:text-8xl lg:text-[115px] xl:text-[135px] leading-[0.88] tracking-tight uppercase text-[#D4FF00] drop-shadow-[0_0_35px_rgba(212,255,0,0.25)] gpu-accelerated"
+          className="relative z-5 flex flex-col items-center justify-center font-display font-black text-4xl sm:text-6xl md:text-8xl lg:text-[115px] xl:text-[135px] leading-[0.88] tracking-tight uppercase text-[#D4FF00] md:drop-shadow-[0_0_35px_rgba(212,255,0,0.25)] drop-shadow-none gpu-accelerated"
         >
           <div>VIDHI</div>
           <div>AGRAWAL</div>
@@ -314,8 +314,8 @@ export default function HomePage() {
         </div>
       </footer>
 
-      {/* Rightmost Bottom Corner Toggle Button */}
-      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 pointer-events-auto">
+      {/* Rightmost Bottom Corner Toggle Button (Desktop Only) */}
+      <div className="hidden md:block fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 pointer-events-auto">
         <button
           onClick={() => setSplashMode((prev) => (prev === 'light' ? 'heavy' : 'light'))}
           className="glass-card px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-[#D4FF00]/50 hover:border-[#D4FF00] hover:scale-105 active:scale-95 text-[10px] sm:text-xs font-mono-code font-bold tracking-wider text-[#D4FF00] flex items-center space-x-2 sm:space-x-2.5 cursor-pointer shadow-[0_0_20px_rgba(212,255,0,0.25)] transition-all duration-200 group"

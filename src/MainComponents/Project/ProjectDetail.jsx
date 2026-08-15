@@ -30,8 +30,8 @@ export default function ProjectDetail({ selectedProject, onClose }) {
       <div className="w-full max-w-6xl mx-auto my-auto relative z-10 pt-10 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
           
-          {/* COLUMN 1: Vertical Stack of Images (3 Rows x 1 Column) */}
-          <div className="lg:col-span-6 space-y-6">
+          {/* COLUMN 1: Vertical Stack of Images (Desktop Only - Hidden on Mobile Size) */}
+          <div className="hidden lg:block lg:col-span-6 space-y-6">
             {selectedProject.images && selectedProject.images.length > 0 ? (
               selectedProject.images.map((imgUrl, imgIdx) => (
                 <div
