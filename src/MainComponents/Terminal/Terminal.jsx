@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
 import { useNavigate } from 'react-router';
 
 const STEPS = [
@@ -21,6 +22,9 @@ export default function Terminal() {
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const historyContainerRef = useRef(null);
+  const containerRef = useRef(null);
+  const clockRef = useRef(null);
+  const binaryContainerRef = useRef(null);
 
   const [isMobile, setIsMobile] = useState(false);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -33,8 +37,34 @@ export default function Terminal() {
   });
   const [history, setHistory] = useState([]);
   const [isCompleted, setIsCompleted] = useState(false);
-  const [currentTime, setCurrentTime] = useState('');
   const [viewsCount, setViewsCount] = useState(1);
+
+  // GSAP Entrance animation on mount
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
+
+      tl.fromTo(
+        '.term-header',
+        { opacity: 0, y: -12 },
+        { opacity: 1, y: 0, duration: 0.3 }
+      )
+        .fromTo(
+          '.term-center',
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.35 },
+          '-=0.2'
+        )
+        .fromTo(
+          '.term-footer',
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.25 },
+          '-=0.2'
+        );
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
 
   // Screen size detection for adaptive performance
   useEffect(() => {
@@ -46,7 +76,7 @@ export default function Terminal() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Dynamic View Counter tracking (Starts fresh from 1, increments ONCE per website visit session)
+  // Dynamic View Counter tracking
   useEffect(() => {
     try {
       const KEY = 'portfolio_site_views';
@@ -67,39 +97,34 @@ export default function Terminal() {
     }
   }, []);
 
-  // Mutating binary stream state (Desktop: 90ms high-speed loop | Mobile: Static stream)
-  const [binaryStream, setBinaryStream] = useState([
-    '00011101',
-    '10100100',
-    '01001100',
-    '11010010',
-    '00110001',
-    '10101011',
-  ]);
-
+  // Direct DOM Mutating binary stream (0 React re-renders!)
   useEffect(() => {
-    if (isMobile) return; // Stop binary stream animation loop on mobile size
+    if (isMobile) return;
 
     const binaryInterval = setInterval(() => {
-      setBinaryStream(Array.from({ length: 6 }, () => generateBinaryLine()));
-    }, 90);
+      if (binaryContainerRef.current) {
+        const lines = Array.from({ length: 6 }, () => generateBinaryLine());
+        binaryContainerRef.current.innerText = lines.join('\n');
+      }
+    }, 120);
 
     return () => clearInterval(binaryInterval);
   }, [isMobile]);
 
-  // High-Frequency Digital Clock (Desktop: 40ms with milliseconds | Mobile: 1000ms seconds update)
+  // Direct DOM Mutating Digital Clock (0 React re-renders!)
   useEffect(() => {
-    const clockInterval = isMobile ? 1000 : 40;
+    const clockInterval = isMobile ? 1000 : 50;
     const timer = setInterval(() => {
+      if (!clockRef.current) return;
       const now = new Date();
       const hh = String(now.getHours()).padStart(2, '0');
       const mm = String(now.getMinutes()).padStart(2, '0');
       const ss = String(now.getSeconds()).padStart(2, '0');
       if (isMobile) {
-        setCurrentTime(`${hh}:${mm}:${ss}`);
+        clockRef.current.textContent = `${hh}:${mm}:${ss}`;
       } else {
         const ms = String(Math.floor(now.getMilliseconds() / 10)).padStart(2, '0');
-        setCurrentTime(`${hh}:${mm}:${ss}:${ms}`);
+        clockRef.current.textContent = `${hh}:${mm}:${ss}:${ms}`;
       }
     }, clockInterval);
 
@@ -206,6 +231,7 @@ export default function Terminal() {
 
   return (
     <div
+      ref={containerRef}
       onClick={() => inputRef.current && inputRef.current.focus()}
       className="fixed inset-0 w-screen h-screen bg-black text-[#CCFF00] font-mono-code p-4 sm:p-8 md:p-14 overflow-hidden select-none flex flex-col justify-between z-50 cursor-crosshair"
     >
@@ -240,7 +266,7 @@ export default function Terminal() {
       </div>
 
       {/* TOP HEADER BAR */}
-      <div className="relative z-20 flex items-start justify-between w-full pt-2 sm:pt-0">
+      <div className="term-header relative z-20 flex items-start justify-between w-full pt-2 sm:pt-0">
         {/* Top Left ABORT Button: [ ESC // ABORT ] */}
         <button
           onClick={() => navigate('/')}
@@ -250,15 +276,16 @@ export default function Terminal() {
         </button>
 
         {/* Top Right Mutating Binary Stream Loop */}
-        <div className="text-[9px] sm:text-[11px] font-mono-code text-[#CCFF00]/80 tracking-widest leading-snug text-right tabular-nums select-none">
-          {binaryStream.map((line, i) => (
-            <div key={i}>{line}</div>
-          ))}
+        <div
+          ref={binaryContainerRef}
+          className="text-[9px] sm:text-[11px] font-mono-code text-[#CCFF00]/80 tracking-widest leading-snug text-right tabular-nums select-none whitespace-pre"
+        >
+          00011101{'\n'}10100100{'\n'}01001100{'\n'}11010010{'\n'}00110001{'\n'}10101011
         </div>
       </div>
 
       {/* CENTER DYNAMICALLY GROWING HORIZONTAL BAND */}
-      <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 w-full bg-black/95 border-y border-[#CCFF00]/25 flex items-center justify-between px-4 sm:px-12 md:px-24 py-5 sm:py-8 z-20 shadow-2xl transition-all duration-300">
+      <div className="term-center absolute top-1/2 -translate-y-1/2 left-0 right-0 w-full bg-black/95 border-y border-[#CCFF00]/25 flex items-center justify-between px-4 sm:px-12 md:px-24 py-5 sm:py-8 z-20 shadow-2xl transition-all duration-300">
         
         {/* Left Side: CORE_INJECTION_PROTOCOL, Dynamic History & Input */}
         <div className="flex-1 max-w-4xl">
@@ -349,7 +376,7 @@ export default function Terminal() {
       </div>
 
       {/* BOTTOM FOOTER HUD DIAGNOSTICS & TICKING CLOCK */}
-      <div className="relative z-20 w-full flex items-end justify-between text-[10px] sm:text-xs font-mono-code pb-1 sm:pb-0">
+      <div className="term-footer relative z-20 w-full flex items-end justify-between text-[10px] sm:text-xs font-mono-code pb-1 sm:pb-0">
         {/* Bottom Left System Core Diagnostics */}
         <div className="space-y-0.5 sm:space-y-1 text-[#CCFF00]/90">
           <div className="font-bold text-xs sm:text-sm tracking-wider text-[#CCFF00]">
@@ -372,8 +399,11 @@ export default function Terminal() {
             <span>TOTAL_VIEWS: {viewsCount.toLocaleString()}</span>
           </div>
 
-          <div className="font-display font-black text-xl sm:text-3xl md:text-4xl text-[#CCFF00] tracking-wider leading-none">
-            {currentTime || '21:01:24:76'}
+          <div
+            ref={clockRef}
+            className="font-display font-black text-xl sm:text-3xl md:text-4xl text-[#CCFF00] tracking-wider leading-none"
+          >
+            21:01:24:76
           </div>
           <div className="text-[9px] sm:text-xs text-[#CCFF00]/90 tracking-widest uppercase">
             {isCompleted ? 'TRANSMISSION_DISPATCHED' : 'AWAITING_INPUT'}

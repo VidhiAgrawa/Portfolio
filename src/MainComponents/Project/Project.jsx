@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import gsap from 'gsap';
 import Navbar from '../../Utilities/Navbar';
 import ProjectDetail from './ProjectDetail';
 import {
@@ -197,18 +198,67 @@ const CATEGORIES = ['ALL', 'FULLSTACK', 'OPEN SOURCE', 'AI', 'UTILITY'];
 export default function Project() {
   const [activeCategory, setActiveCategory] = useState('ALL');
   const [selectedProject, setSelectedProject] = useState(null);
+  const containerRef = useRef(null);
 
-  const filteredProjects =
-    activeCategory === 'ALL'
-      ? PROJECTS_DATA
-      : PROJECTS_DATA.filter((p) =>
-          Array.isArray(p.category)
-            ? p.category.includes(activeCategory)
-            : p.category === activeCategory
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
+
+      tl.fromTo(
+        '.project-tag',
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.3 }
+      )
+        .fromTo(
+          '.project-title-text',
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: 0.35, stagger: 0.05 },
+          '-=0.2'
+        )
+        .fromTo(
+          '.project-cat-btn',
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.25, stagger: 0.02 },
+          '-=0.2'
+        )
+        .fromTo(
+          '.project-card',
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.35, stagger: 0.04, clearProps: 'transform' },
+          '-=0.2'
+        )
+        .fromTo(
+          '.project-card-text',
+          { opacity: 0, y: 8 },
+          { opacity: 1, y: 0, duration: 0.25, stagger: 0.02, clearProps: 'transform' },
+          '-=0.25'
+        )
+        .fromTo(
+          '.project-footer',
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.35, clearProps: 'transform' },
+          '-=0.2'
         );
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  const filteredProjects = useMemo(
+    () =>
+      activeCategory === 'ALL'
+        ? PROJECTS_DATA
+        : PROJECTS_DATA.filter((p) =>
+            Array.isArray(p.category)
+              ? p.category.includes(activeCategory)
+              : p.category === activeCategory
+          ),
+    [activeCategory]
+  );
 
   return (
     <section
+      ref={containerRef}
       id="project"
       className="relative min-h-screen w-full bg-[#050507] text-white py-28 px-6 md:px-16 overflow-x-hidden border-t border-zinc-900"
     >
@@ -222,15 +272,15 @@ export default function Project() {
 
       <div className="max-w-7xl mx-auto relative z-10 pt-10 pb-20">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 pb-8 border-b border-zinc-800/80">
+        <div className="project-header flex flex-col md:flex-row md:items-end justify-between mb-12 pb-8 border-b border-zinc-800/80">
           <div>
-            <div className="inline-flex items-center space-x-2 font-mono-code text-xs text-[#D4FF00] tracking-widest uppercase mb-3">
+            <div className="project-tag inline-flex items-center space-x-2 font-mono-code text-xs text-[#D4FF00] tracking-widest uppercase mb-3">
               <span className="w-2 h-2 rounded-full bg-[#D4FF00] animate-pulse" />
               <span>// FEATURED WORKS & PROJECTS</span>
             </div>
             <h2 className="font-display font-black text-4xl sm:text-5xl md:text-6xl tracking-tight uppercase text-white leading-tight">
-              <div>CRAFTED WITH</div>
-              <div className="text-[#D4FF00]">PRECISION.</div>
+              <div className="project-title-text">CRAFTED WITH</div>
+              <div className="project-title-text text-[#D4FF00]">PRECISION.</div>
             </h2>
           </div>
         </div>
@@ -241,7 +291,7 @@ export default function Project() {
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-xs font-mono-code font-semibold tracking-wider uppercase transition-all duration-200 cursor-pointer border ${
+              className={`project-cat-btn px-4 py-2 rounded-xl text-xs font-mono-code font-semibold tracking-wider uppercase transition-colors duration-200 cursor-pointer border ${
                 activeCategory === cat
                   ? 'bg-[#D4FF00]/10 border-[#D4FF00] text-[#D4FF00] shadow-[0_0_15px_rgba(212,255,0,0.15)]'
                   : 'bg-zinc-900/40 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-white'
@@ -256,10 +306,11 @@ export default function Project() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProjects.map((project) => {
             const IconComp = project.icon;
+
             return (
               <div
                 key={project.id}
-                className="glass-card rounded-2xl p-6 md:p-7 flex flex-col justify-between group hover:-translate-y-2 transition-all duration-300 relative overflow-hidden"
+                className="project-card glass-card rounded-2xl p-6 md:p-7 flex flex-col justify-between group hover:-translate-y-2 transition-transform duration-200 relative overflow-hidden"
               >
                 {/* Subtle Top Ambient Glow */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4FF00]/10 rounded-full blur-2xl group-hover:bg-[#D4FF00]/25 transition-all duration-300" />
@@ -270,6 +321,7 @@ export default function Project() {
                     <div className="w-12 h-12 rounded-xl bg-[#D4FF00]/10 border border-[#D4FF00]/40 flex items-center justify-center text-[#D4FF00] group-hover:bg-[#D4FF00] group-hover:text-black transition-colors duration-300 shadow-[0_0_15px_rgba(212,255,0,0.15)]">
                       <IconComp className="w-6 h-6" />
                     </div>
+
                     <div className="flex flex-wrap gap-1.5 justify-end">
                       {Array.isArray(project.category) ? (
                         project.category.map((cat) => (
@@ -289,15 +341,15 @@ export default function Project() {
                   </div>
 
                   {/* Title & Subtitle */}
-                  <h3 className="font-display font-extrabold text-2xl text-white group-hover:text-[#D4FF00] transition-colors mb-1">
+                  <h3 className="project-card-text font-display font-extrabold text-2xl text-white group-hover:text-[#D4FF00] transition-colors mb-1">
                     {project.title}
                   </h3>
-                  <div className="font-mono-code text-xs text-zinc-400 mb-4">
+                  <div className="project-card-text font-mono-code text-xs text-zinc-400 mb-4">
                     {project.subtitle}
                   </div>
 
                   {/* Description */}
-                  <p className="text-zinc-300 text-xs md:text-sm font-mono-code leading-relaxed mb-6">
+                  <p className="project-card-text text-zinc-300 text-xs md:text-sm font-mono-code leading-relaxed mb-6">
                     {project.description}
                   </p>
 
@@ -364,6 +416,44 @@ export default function Project() {
               </div>
             );
           })}
+        </div>
+
+        {/* Project Section Footer Banner */}
+        <div className="project-footer mt-16 sm:mt-24 p-6 sm:p-10 md:p-12 rounded-2xl bg-[#0b0c10] border border-zinc-800/80 relative overflow-hidden group shadow-2xl">
+          {/* Neon Corner Accents */}
+          <div className="absolute top-0 left-0 w-3.5 h-3.5 border-t-2 border-l-2 border-[#D4FF00] opacity-80" />
+          <div className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b-2 border-r-2 border-[#D4FF00] opacity-80" />
+
+          <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-10">
+            <div className="max-w-3xl">
+              <div className="inline-flex items-center space-x-2 font-mono-code text-[11px] text-[#D4FF00] tracking-widest uppercase mb-3 bg-[#D4FF00]/10 px-3 py-1 rounded-full border border-[#D4FF00]/30">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D4FF00] animate-pulse" />
+                <span>EXPERIENCE_GAINED</span>
+              </div>
+              <h3 className="font-display font-black text-xl sm:text-2xl md:text-3xl text-white tracking-tight uppercase mb-3">
+                BUILDING TO LEARN. LEARNING TO EXCEL.
+              </h3>
+              <p className="font-mono-code text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                Every project featured in this showcase represents a core milestone in my engineering growth. From architecting complex full-stack applications and integrating custom AI models to optimizing real-time 60 FPS graphics, constructing these solutions provided hands-on experience in problem solving, UI performance optimization, and scalable code design.
+              </p>
+            </div>
+
+            {/* Micro Feature Pills */}
+            <div className="flex flex-wrap md:flex-col gap-2.5 shrink-0">
+              <div className="px-3.5 py-2 rounded-lg bg-zinc-900/90 border border-zinc-800 text-[11px] font-mono-code text-zinc-300 flex items-center space-x-2">
+                <span className="text-[#D4FF00]">✓</span>
+                <span>HANDS-ON ARCHITECTURE</span>
+              </div>
+              <div className="px-3.5 py-2 rounded-lg bg-zinc-900/90 border border-zinc-800 text-[11px] font-mono-code text-zinc-300 flex items-center space-x-2">
+                <span className="text-cyan-400">✓</span>
+                <span>REAL-WORLD PROBLEM SOLVING</span>
+              </div>
+              <div className="px-3.5 py-2 rounded-lg bg-zinc-900/90 border border-zinc-800 text-[11px] font-mono-code text-zinc-300 flex items-center space-x-2">
+                <span className="text-[#D4FF00]">✓</span>
+                <span>PERFORMANCE OPTIMIZATION</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

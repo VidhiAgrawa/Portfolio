@@ -1,14 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
+import gsap from 'gsap';
 import Navbar from '../../Utilities/Navbar';
 import FloatingCard from '../../Utilities/FloatingCard';
 import CodeChip from '../../Utilities/CodeChip';
 import SplashCursor from '../../Utilities/SplashCursor';
 import { Eye, Code2, Sparkles, Briefcase, Cpu, Sparkles as SparklesIcon, Zap } from 'lucide-react';
 
-export default function HomePage() {
+export default function HomePage({ isLoading = false }) {
   const containerRef = useRef(null);
   const foregroundRef = useRef(null);
   const backgroundRef = useRef(null);
+  const navRef = useRef(null);
+  const footerRef = useRef(null);
+  const hasAnimatedRef = useRef(false);
 
   // Responsive mobile screen check
   const [isMobile, setIsMobile] = useState(false);
@@ -21,6 +25,81 @@ export default function HomePage() {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Entrance GSAP Animation when mounting or loading completes
+  useEffect(() => {
+    if (isLoading) return;
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+      // 1. Top Navbar drop down + fade in
+      if (navRef.current) {
+        tl.fromTo(
+          navRef.current,
+          { opacity: 0, y: -25 },
+          { opacity: 1, y: 0, duration: 0.5 }
+        );
+      }
+
+      // 2. Hero Typography slide up + fade in
+      const heroTargets = [foregroundRef.current, backgroundRef.current].filter(Boolean);
+      if (heroTargets.length > 0) {
+        tl.fromTo(
+          heroTargets,
+          { opacity: 0, y: 35 },
+          { opacity: 1, y: 0, duration: 0.55, stagger: 0.06 },
+          '-=0.3'
+        );
+      }
+
+      // 3. Floating Cards fade in + slide up with clearProps for Draggable compatibility
+      const cards = gsap.utils.toArray('.home-card');
+      if (cards.length > 0) {
+        tl.fromTo(
+          cards,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            stagger: 0.06,
+            clearProps: 'transform',
+          },
+          '-=0.35'
+        );
+      }
+
+      // 4. Code Chips & Fragments fade in + slide up with clearProps
+      const chips = gsap.utils.toArray('.home-chip');
+      if (chips.length > 0) {
+        tl.fromTo(
+          chips,
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.4,
+            stagger: 0.03,
+            clearProps: 'transform',
+          },
+          '-=0.3'
+        );
+      }
+
+      // 5. Footer text fade in
+      if (footerRef.current) {
+        tl.fromTo(
+          footerRef.current,
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.4 },
+          '-=0.2'
+        );
+      }
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, [isLoading]);
 
   // Splash mode: 'light' (Default) vs 'heavy'
   const [splashMode, setSplashMode] = useState('light');
@@ -135,7 +214,9 @@ export default function HomePage() {
       {!isMobile && <SplashCursor {...activeSplashProps} />}
 
       {/* Top Navbar */}
-      <Navbar />
+      <div ref={navRef} className="w-full z-50">
+        <Navbar />
+      </div>
 
       {/* Hero Section with Mobile Responsive Brutalist Parallax Typography */}
       <main className="relative flex-1 flex items-center justify-center pointer-events-none select-none px-4 sm:px-8 z-10">
@@ -173,6 +254,7 @@ export default function HomePage() {
           initialPos={isMobile ? { top: '15%', left: '5%' } : { top: '14%', left: '6.5%' }}
           zIndex={zIndices.SIPVision}
           onBringToFront={bringToFront}
+          className="home-card"
         />
 
         {/* Chip 2: <div className="absolute"/> */}
@@ -182,6 +264,7 @@ export default function HomePage() {
           initialPos={isMobile ? { top: '10%', left: '48%' } : { top: '9%', left: '42%' }}
           zIndex={zIndices.chipAbsolute}
           onBringToFront={bringToFront}
+          className="home-chip"
         />
 
         {/* Card 3: React */}
@@ -192,6 +275,7 @@ export default function HomePage() {
           initialPos={isMobile ? { top: '18%', left: '56%' } : { top: '14.5%', left: '65.5%' }}
           zIndex={zIndices.ReactCard}
           onBringToFront={bringToFront}
+          className="home-card"
         />
 
         {/* Chip 4: import * as THREE */}
@@ -201,6 +285,7 @@ export default function HomePage() {
           initialPos={isMobile ? { top: '34%', left: '4%' } : { top: '30.5%', left: '8.5%' }}
           zIndex={zIndices.chipThree}
           onBringToFront={bringToFront}
+          className="home-chip"
         />
 
         {/* Card 5: Next.js */}
@@ -211,6 +296,7 @@ export default function HomePage() {
           initialPos={isMobile ? { top: '72%', left: '54%' } : { top: '41.5%', left: '79.5%' }}
           zIndex={zIndices.NextCard}
           onBringToFront={bringToFront}
+          className="home-card"
         />
 
         {/* Badge 6: Δ Delta badge */}
@@ -220,6 +306,7 @@ export default function HomePage() {
           initialPos={isMobile ? { top: '42%', left: '82%' } : { top: '49.5%', left: '92%' }}
           zIndex={zIndices.badgeDelta}
           onBringToFront={bringToFront}
+          className="home-chip"
         />
 
         {/* Card 7: Abreonix */}
@@ -231,6 +318,7 @@ export default function HomePage() {
           initialPos={isMobile ? { top: '72%', left: '5%' } : { top: '69.5%', left: '26.5%' }}
           zIndex={zIndices.Abreonix}
           onBringToFront={bringToFront}
+          className="home-card"
         />
 
         {/* Card 8: AI Manager */}
@@ -242,6 +330,7 @@ export default function HomePage() {
           initialPos={isMobile ? { top: '46%', left: '8%' } : { top: '61.5%', left: '75%' }}
           zIndex={zIndices.AIManager}
           onBringToFront={bringToFront}
+          className="home-card"
         />
 
         {/* Chip 9: { opacity: 0.8 } */}
@@ -251,6 +340,7 @@ export default function HomePage() {
           initialPos={isMobile ? { top: '82%', left: '52%' } : { top: '78.5%', left: '61%' }}
           zIndex={zIndices.chipOpacity}
           onBringToFront={bringToFront}
+          className="home-chip"
         />
 
         {/* TECH FRAGMENTS (Hidden on small mobile screens to keep layout clean) */}
@@ -262,6 +352,7 @@ export default function HomePage() {
               initialPos={{ top: '22%', left: '26%' }}
               zIndex={zIndices.fragGlow}
               onBringToFront={bringToFront}
+              className="home-chip"
             />
 
             <CodeChip
@@ -270,6 +361,7 @@ export default function HomePage() {
               initialPos={{ top: '84%', left: '12%' }}
               zIndex={zIndices.fragClamp}
               onBringToFront={bringToFront}
+              className="home-chip"
             />
 
             <CodeChip
@@ -278,6 +370,7 @@ export default function HomePage() {
               initialPos={{ top: '56%', left: '5%' }}
               zIndex={zIndices.fragHex}
               onBringToFront={bringToFront}
+              className="home-chip"
             />
 
             <CodeChip
@@ -286,6 +379,7 @@ export default function HomePage() {
               initialPos={{ top: '82%', left: '44%' }}
               zIndex={zIndices.fragCanvas}
               onBringToFront={bringToFront}
+              className="home-chip"
             />
 
             <CodeChip
@@ -294,6 +388,7 @@ export default function HomePage() {
               initialPos={{ top: '38%', left: '70%' }}
               zIndex={zIndices.fragFn}
               onBringToFront={bringToFront}
+              className="home-chip"
             />
 
             <CodeChip
@@ -302,13 +397,14 @@ export default function HomePage() {
               initialPos={{ top: '86%', left: '80%' }}
               zIndex={zIndices.fragXYZ}
               onBringToFront={bringToFront}
+              className="home-chip"
             />
           </>
         )}
       </div>
 
       {/* Footer Center Text */}
-      <footer className="relative z-20 pb-6 sm:pb-8 text-center pointer-events-auto">
+      <footer ref={footerRef} className="relative z-20 pb-6 sm:pb-8 text-center pointer-events-auto">
         <div className="inline-block font-display font-extrabold text-[10px] sm:text-xs md:text-sm tracking-[0.3em] text-[#D4FF00] uppercase hover:scale-105 transition-transform duration-200 cursor-default drop-shadow-[0_0_15px_rgba(212,255,0,0.4)]">
           DRAG EVERYTHING.
         </div>

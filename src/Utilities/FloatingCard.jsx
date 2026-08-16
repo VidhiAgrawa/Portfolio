@@ -6,7 +6,7 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(Draggable);
 }
 
-export default function FloatingCard({
+const FloatingCard = React.memo(function FloatingCard({
   id,
   title,
   subtitle,
@@ -14,6 +14,7 @@ export default function FloatingCard({
   initialPos = { top: '20%', left: '10%' },
   zIndex = 10,
   onBringToFront,
+  className = '',
 }) {
   const cardRef = useRef(null);
   const onBringToFrontRef = useRef(onBringToFront);
@@ -22,23 +23,30 @@ export default function FloatingCard({
   useEffect(() => {
     if (!cardRef.current) return;
 
-    const draggableInstance = Draggable.create(cardRef.current, {
-      type: 'x,y',
-      cursor: 'grab',
-      activeCursor: 'grabbing',
-      allowEventDefault: true,
-      onPress: function () {
-        if (cardRef.current) {
-          cardRef.current.style.zIndex = 9999;
-        }
-        if (onBringToFrontRef.current) {
-          onBringToFrontRef.current(id);
-        }
-      },
+    let draggableInstance = null;
+    const animId = requestAnimationFrame(() => {
+      if (!cardRef.current) return;
+      draggableInstance = Draggable.create(cardRef.current, {
+        type: 'x,y',
+        cursor: 'grab',
+        activeCursor: 'grabbing',
+        allowEventDefault: true,
+        onPress: function () {
+          if (cardRef.current) {
+            cardRef.current.style.zIndex = 9999;
+          }
+          if (onBringToFrontRef.current) {
+            onBringToFrontRef.current(id);
+          }
+        },
+      });
     });
 
     return () => {
-      if (draggableInstance[0]) draggableInstance[0].kill();
+      cancelAnimationFrame(animId);
+      if (draggableInstance && draggableInstance[0]) {
+        draggableInstance[0].kill();
+      }
     };
   }, [id]);
 
@@ -52,18 +60,19 @@ export default function FloatingCard({
     <div
       ref={cardRef}
       style={{
+        position: 'absolute',
         top: initialPos.top,
         left: initialPos.left,
-        zIndex: zIndex,
-        position: 'absolute',
-        touchAction: 'none',
+        zIndex,
       }}
-      className="select-none cursor-grab active:cursor-grabbing pointer-events-auto"
+      className={`home-card glass-card px-3 sm:px-4 py-2 sm:py-3 rounded-2xl cursor-grab active:cursor-grabbing select-none flex items-center space-x-2.5 sm:space-x-3 pointer-events-auto hover:border-[#D4FF00]/60 transition-all duration-200 shadow-[0_4px_25px_rgba(0,0,0,0.5)] group gpu-accelerated ${className}`}
     >
-      <div className="glass-card px-3 py-2 sm:px-5 sm:py-4 rounded-lg sm:rounded-xl flex items-center space-x-2.5 sm:space-x-4 shadow-2xl transition-transform duration-200 hover:scale-105 active:scale-95 group md:animate-float-bob">
+      <div className="w-1.5 h-1.5 rounded-full bg-[#D4FF00] animate-pulse shrink-0" />
+
+      <div className="flex items-center space-x-2">
         {Icon && (
-          <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-md sm:rounded-lg bg-[#D4FF00]/10 border border-[#D4FF00]/40 flex items-center justify-center text-[#D4FF00] group-hover:bg-[#D4FF00]/20 transition-colors shadow-[0_0_10px_rgba(212,255,0,0.15)] shrink-0">
-            <Icon className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#D4FF00]/10 border border-[#D4FF00]/30 flex items-center justify-center text-[#D4FF00] group-hover:scale-105 transition-transform shrink-0">
+            <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </div>
         )}
 
@@ -80,4 +89,6 @@ export default function FloatingCard({
       </div>
     </div>
   );
-}
+});
+
+export default FloatingCard;
