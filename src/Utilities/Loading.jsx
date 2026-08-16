@@ -1,22 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-
-const SYSTEM_LOGS = [
-  { threshold: 5, text: '> CRITICAL_FAILURE_DETECTED' },
-  { threshold: 15, text: '> [WARN] MEMORY_CORRUPTION_DETECTED' },
-  { threshold: 25, text: '> SEGMENTATION_FAULT (core dumped)' },
-  { threshold: 40, text: '> SYSTEM_HALTED_AT_0x45FA9' },
-  { threshold: 55, text: '> ATTEMPTING_RECOVERY_PROTOCOL...' },
-  { threshold: 70, text: '> KERNEL_PANIC' },
-  { threshold: 82, text: '> CRITICAL_ERROR: OVERRIDE_FAILED' },
-  { threshold: 92, text: '> MANUAL_INTERVENTION_REQUIRED' },
-  { threshold: 100, text: '> SYSTEM_LOCKED_' },
-];
+import { Cpu, Sparkles, ShieldCheck, Zap } from 'lucide-react';
 
 const generateBinaryLine = () =>
   Array.from({ length: 8 }, () => (Math.random() > 0.5 ? '1' : '0')).join('');
 
 export default function Loading({ onComplete }) {
-  const consoleRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const [isFadingOut, setIsFadingOut] = useState(false);
 
@@ -62,19 +50,10 @@ export default function Loading({ onComplete }) {
     return () => cancelAnimationFrame(animId);
   }, [onComplete]);
 
-  const visibleLogs = SYSTEM_LOGS.filter((log) => progress >= log.threshold);
-
-  useEffect(() => {
-    if (consoleRef.current) {
-      consoleRef.current.scrollTop = consoleRef.current.scrollHeight;
-    }
-  }, [visibleLogs.length]);
-
   return (
     <div
-      className={`fixed inset-0 z-[9999] bg-[#07080a] text-white flex flex-col items-center justify-center p-4 select-none overflow-hidden transition-opacity duration-500 ${
-        isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
-      }`}
+      className={`fixed inset-0 z-[9999] bg-[#07080a] text-white flex flex-col items-center justify-center p-4 select-none overflow-hidden transition-opacity duration-500 ${isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        }`}
     >
       {/* 🎨 CSS for Strong Cyberpunk Chromatic Glitch Animation */}
       <style>{`
@@ -166,28 +145,21 @@ export default function Loading({ onComplete }) {
 
       {/* 🖥️ Main Container */}
       <div className="relative z-10 flex flex-col items-center justify-center w-full h-full pb-16">
-        
-        {/* ⭕ Central Ring & Typography Display */}
-        <div className="relative flex flex-col items-center justify-center mb-16">
-          
-          {/* Minimalist Arc Ring */}
-          {/* <div className="absolute w-[300px] h-[300px] sm:w-[420px] sm:h-[420px] rounded-full border border-zinc-800 pointer-events-none flex items-center justify-center">
-            <div className="absolute w-full h-full rounded-full border-t border-r border-[#CCFF00] opacity-70 animate-spin" style={{ animationDuration: '3s' }} />
-          </div> */}
 
-          {/* 💥 Typography Display (White Text 2x Larger than Neon Lime ERR) */}
+        {/* ⭕ Central Ring & Typography Display */}
+        <div className="relative flex flex-col items-center justify-center mb-12 sm:mb-14">
+
+          {/* 💥 Typography Display */}
           <div className="relative z-10 flex items-baseline justify-center whitespace-nowrap">
             {progress < 100 ? (
               <div className="flex items-baseline space-x-2 sm:space-x-4">
-                {/* Large Solid White Number */}
-                <span 
+                <span
                   className="font-display font-black text-7xl xs:text-8xl sm:text-[140px] md:text-[160px] text-white tracking-tighter leading-none"
                   style={{ textShadow: '0 0 25px rgba(255,255,255,0.4)' }}
                 >
                   {progress}
                 </span>
-                {/* Compact Neon Lime ERR */}
-                <span 
+                <span
                   className="font-display font-black text-3xl xs:text-4xl sm:text-[70px] md:text-[80px] text-[#CCFF00] tracking-widest leading-none"
                   style={{ textShadow: '0 0 25px rgba(204,255,0,0.6)' }}
                 >
@@ -196,14 +168,12 @@ export default function Loading({ onComplete }) {
               </div>
             ) : (
               <div className="flex items-baseline space-x-2 sm:space-x-4">
-                {/* Large Solid White ERR with Strong Chromatic Glitch Animation */}
-                <span 
+                <span
                   className="font-display font-black text-7xl xs:text-8xl sm:text-[140px] md:text-[160px] text-white tracking-widest leading-none glitch-text-strong"
                 >
                   ERR
                 </span>
-                {/* Compact Neon Lime ERR */}
-                <span 
+                <span
                   className="font-display font-black text-3xl xs:text-4xl sm:text-[70px] md:text-[80px] text-[#CCFF00] tracking-widest leading-none"
                   style={{ textShadow: '0 0 30px rgba(204,255,0,0.7)' }}
                 >
@@ -214,24 +184,83 @@ export default function Loading({ onComplete }) {
           </div>
         </div>
 
-        {/* 📜 System Log Console Box */}
-        {/* <div
-          ref={consoleRef}
-          className="w-[90%] max-w-[450px] max-h-[160px] overflow-y-auto border border-[#CCFF00]/30 border-t-8 rounded-sm p-4 font-mono text-[11px] sm:text-sm text-zinc-400 space-y-1.5 backdrop-blur-md scroll-smooth bg-black/60 shadow-[0_0_15px_rgba(204,255,0,0.05)]"
-        >
-          {visibleLogs.map((log, idx) => (
-            <div
-              key={idx}
-              className={`${
-                idx === visibleLogs.length - 1
-                  ? 'text-[#CCFF00] font-bold animate-pulse'
-                  : 'text-zinc-500'
-              }`}
-            >
-              {log.text}
+        {/* 💠 FUTURISTIC SYSTEM MODULE INITIALIZATION MATRIX */}
+        <div className="w-[92%] max-w-[540px] rounded-2xl bg-[#0b0c10]/80 border border-zinc-800 p-5 sm:p-6 backdrop-blur-2xl shadow-[0_0_40px_rgba(0,0,0,0.8)] relative group">
+          <div className="absolute top-0 left-8 right-8 h-[2px] bg-gradient-to-r from-transparent via-[#D4FF00] to-transparent shadow-[0_0_15px_#D4FF00]" />
+
+          <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-800/80">
+            <div className="flex items-center space-x-2.5">
+              <div className="w-2 h-2 rounded-full bg-[#D4FF00] animate-ping" />
+              <span className="font-mono-code text-[11px] sm:text-xs font-bold text-white tracking-widest uppercase">
+                SYSTEM INITIALIZATION MATRIX
+              </span>
             </div>
-          ))}
-        </div> */}
+            <span className="font-mono-code text-[10px] sm:text-[11px] text-[#D4FF00] font-extrabold tracking-wider bg-[#D4FF00]/10 px-2.5 py-0.5 rounded-full border border-[#D4FF00]/30">
+              {progress}% COMPLETED
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+            <div
+              className={`p-3 rounded-xl border transition-all duration-300 flex items-center justify-between ${progress >= 25 ? 'bg-[#D4FF00]/10 border-[#D4FF00]/60 text-white shadow-[0_0_15px_rgba(212,255,0,0.15)]' : 'bg-zinc-900/40 border-zinc-800/80 text-zinc-500'}`}
+            >
+              <div className="flex items-center space-x-2.5">
+                <Cpu className={`w-4 h-4 ${progress >= 25 ? 'text-[#D4FF00]' : 'text-zinc-600'}`} />
+                <div>
+                  <div className="font-mono-code text-[10px] font-bold tracking-wider uppercase">01. CORE ENGINE</div>
+                  <div className="font-mono-code text-[9px] opacity-70">JS / REACT KERNEL</div>
+                </div>
+              </div>
+              <span className={`font-mono-code text-[9px] font-extrabold px-1.5 py-0.5 rounded ${progress >= 25 ? 'bg-[#D4FF00] text-black' : 'bg-zinc-800 text-zinc-600'}`}>{progress >= 25 ? 'ACTIVE' : 'WAITING'}</span>
+            </div>
+
+            <div
+              className={`p-3 rounded-xl border transition-all duration-300 flex items-center justify-between ${progress >= 50 ? 'bg-cyan-500/10 border-cyan-400/60 text-white shadow-[0_0_15px_rgba(6,182,212,0.15)]' : 'bg-zinc-900/40 border-zinc-800/80 text-zinc-500'}`}
+            >
+              <div className="flex items-center space-x-2.5">
+                <Sparkles className={`w-4 h-4 ${progress >= 50 ? 'text-cyan-400' : 'text-zinc-600'}`} />
+                <div>
+                  <div className="font-mono-code text-[10px] font-bold tracking-wider uppercase">02. GRAPHICS VIZ</div>
+                  <div className="font-mono-code text-[9px] opacity-70">120 FPS WEBGL</div>
+                </div>
+              </div>
+              <span className={`font-mono-code text-[9px] font-extrabold px-1.5 py-0.5 rounded ${progress >= 50 ? 'bg-cyan-400 text-black' : 'bg-zinc-800 text-zinc-600'}`}>{progress >= 50 ? 'READY' : 'STANDBY'}</span>
+            </div>
+
+            <div
+              className={`p-3 rounded-xl border transition-all duration-300 flex items-center justify-between ${progress >= 75 ? 'bg-purple-500/10 border-purple-400/60 text-white shadow-[0_0_15px_rgba(192,132,252,0.15)]' : 'bg-zinc-900/40 border-zinc-800/80 text-zinc-500'}`}
+            >
+              <div className="flex items-center space-x-2.5">
+                <ShieldCheck className={`w-4 h-4 ${progress >= 75 ? 'text-purple-400' : 'text-zinc-600'}`} />
+                <div>
+                  <div className="font-mono-code text-[10px] font-bold tracking-wider uppercase">03. MEMORY BUFFER</div>
+                  <div className="font-mono-code text-[9px] opacity-70">ZERO RE-REF LOW</div>
+                </div>
+              </div>
+              <span className={`font-mono-code text-[9px] font-extrabold px-1.5 py-0.5 rounded ${progress >= 75 ? 'bg-purple-400 text-black' : 'bg-zinc-800 text-zinc-600'}`}>{progress >= 75 ? 'OPTIMAL' : 'QUEUED'}</span>
+            </div>
+
+            <div
+              className={`p-3 rounded-xl border transition-all duration-300 flex items-center justify-between ${progress >= 100 ? 'bg-[#D4FF00]/10 border-[#D4FF00]/60 text-white shadow-[0_0_15px_rgba(212,255,0,0.2)]' : 'bg-zinc-900/40 border-zinc-800/80 text-zinc-500'}`}
+            >
+              <div className="flex items-center space-x-2.5">
+                <Zap className={`w-4 h-4 ${progress >= 100 ? 'text-[#D4FF00]' : 'text-zinc-600'}`} />
+                <div>
+                  <div className="font-mono-code text-[10px] font-bold tracking-wider uppercase">04. PORTFOLIO INJECT</div>
+                  <div className="font-mono-code text-[9px] opacity-70">SYSTEM_READY</div>
+                </div>
+              </div>
+              <span className={`font-mono-code text-[9px] font-extrabold px-1.5 py-0.5 rounded ${progress >= 100 ? 'bg-[#D4FF00] text-black' : 'bg-zinc-800 text-zinc-600'}`}>{progress >= 100 ? 'CLEARED' : 'LOCKED'}</span>
+            </div>
+          </div>
+
+          <div className="w-full h-2 rounded-full bg-zinc-900 overflow-hidden relative border border-zinc-800">
+            <div
+              className="h-full bg-gradient-to-r from-cyan-400 via-[#D4FF00] to-[#D4FF00] transition-all duration-150 rounded-full shadow-[0_0_12px_#D4FF00]"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
       </div>
 
       {/* 🚧 Bottom Status Bar */}
