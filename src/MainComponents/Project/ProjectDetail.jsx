@@ -1,7 +1,10 @@
-import React, { useEffect } from 'react';
-import { X, Play, ArrowUpRight } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { X, ArrowUpRight } from 'lucide-react';
 
 export default function ProjectDetail({ selectedProject, onClose }) {
+  const containerRef = useRef(null);
+
   // Lock body scroll when modal is active
   useEffect(() => {
     if (selectedProject) {
@@ -14,14 +17,64 @@ export default function ProjectDetail({ selectedProject, onClose }) {
     };
   }, [selectedProject]);
 
+  // Lightweight GSAP Entrance Animation
+  useEffect(() => {
+    if (!selectedProject) return;
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
+
+      tl.fromTo(
+        '.detail-close-btn',
+        { opacity: 0, y: -10 },
+        { opacity: 1, y: 0, duration: 0.25 }
+      )
+        .fromTo(
+          '.detail-image-card',
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.35, stagger: 0.05, clearProps: 'transform' },
+          '-=0.15'
+        )
+        .fromTo(
+          '.detail-title',
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.35 },
+          '-=0.25'
+        )
+        .fromTo(
+          '.detail-action-btn',
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.25, stagger: 0.03, clearProps: 'transform' },
+          '-=0.2'
+        )
+        .fromTo(
+          '.detail-section',
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.3, stagger: 0.04 },
+          '-=0.2'
+        )
+        .fromTo(
+          '.detail-quote-box',
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.25 },
+          '-=0.15'
+        );
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, [selectedProject]);
+
   if (!selectedProject) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#050507]/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-10">
+    <div
+      ref={containerRef}
+      className="fixed inset-0 z-50 overflow-y-auto bg-[#050507]/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-10"
+    >
       {/* Close button top right */}
       <button
         onClick={onClose}
-        className="fixed top-6 right-6 z-50 w-11 h-11 rounded-full bg-zinc-900/90 border border-zinc-700 hover:border-[#D4FF00] text-zinc-300 hover:text-[#D4FF00] flex items-center justify-center transition-all duration-200 cursor-pointer shadow-2xl group"
+        className="detail-close-btn fixed top-6 right-6 z-50 w-11 h-11 rounded-full bg-zinc-900/90 border border-zinc-700 hover:border-[#D4FF00] text-zinc-300 hover:text-[#D4FF00] flex items-center justify-center transition-all duration-200 cursor-pointer shadow-2xl group"
         title="Close Modal"
       >
         <X className="w-5 h-5 group-hover:rotate-90 transition-transform" />
@@ -36,20 +89,24 @@ export default function ProjectDetail({ selectedProject, onClose }) {
               selectedProject.images.map((imgUrl, imgIdx) => (
                 <div
                   key={imgIdx}
-                  className="relative glass-card rounded-2xl overflow-hidden border-2 border-zinc-800 hover:border-[#D4FF00]/60 transition-colors shadow-2xl group bg-zinc-950"
+                  className="detail-image-card relative glass-card rounded-2xl overflow-hidden border-2 border-zinc-800 hover:border-[#D4FF00]/60 transition-colors shadow-2xl group bg-zinc-950"
                 >
                   <img
                     src={imgUrl}
                     alt={`${selectedProject.title} screenshot ${imgIdx + 1}`}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-auto object-cover group-hover:scale-102 transition-transform duration-500 filter brightness-95 group-hover:brightness-100"
                   />
                 </div>
               ))
             ) : (
-              <div className="relative glass-card rounded-2xl overflow-hidden border-2 border-zinc-800 hover:border-[#D4FF00]/60 transition-colors shadow-2xl group bg-zinc-950">
+              <div className="detail-image-card relative glass-card rounded-2xl overflow-hidden border-2 border-zinc-800 hover:border-[#D4FF00]/60 transition-colors shadow-2xl group bg-zinc-950">
                 <img
                   src={selectedProject.image}
                   alt={selectedProject.title}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-auto object-cover group-hover:scale-102 transition-transform duration-500 filter brightness-95 group-hover:brightness-100"
                 />
               </div>
@@ -60,7 +117,7 @@ export default function ProjectDetail({ selectedProject, onClose }) {
           <div className="lg:col-span-6 space-y-7 lg:sticky lg:top-10">
             {/* Huge Dual-Tone Brutalist Title */}
             <div>
-              <h1 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl tracking-tight uppercase leading-none">
+              <h1 className="detail-title font-display font-black text-4xl sm:text-5xl lg:text-6xl tracking-tight uppercase leading-none">
                 <span className="text-white block">{selectedProject.titlePart1}</span>
                 <span className="text-[#D4FF00] block mt-1">{selectedProject.titlePart2}</span>
               </h1>
@@ -71,7 +128,7 @@ export default function ProjectDetail({ selectedProject, onClose }) {
                   href={selectedProject.demo}
                   target="_blank"
                   rel="noreferrer"
-                  className="px-6 py-3 rounded-lg bg-[#D4FF00] text-black font-display font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center space-x-2 hover:bg-[#bce400] transition-colors shadow-[0_0_20px_rgba(212,255,0,0.3)] cursor-pointer"
+                  className="detail-action-btn px-6 py-3 rounded-lg bg-[#D4FF00] text-black font-display font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center space-x-2 hover:bg-[#bce400] transition-colors shadow-[0_0_20px_rgba(212,255,0,0.3)] cursor-pointer"
                 >
                   <span>LIVE PROJECT</span>
                   <ArrowUpRight className="w-4 h-4" />
@@ -81,7 +138,7 @@ export default function ProjectDetail({ selectedProject, onClose }) {
                   href={selectedProject.github}
                   target="_blank"
                   rel="noreferrer"
-                  className="px-6 py-3 rounded-lg bg-zinc-900/90 border border-zinc-700 hover:border-[#D4FF00] text-white font-mono-code font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center space-x-2 transition-colors cursor-pointer"
+                  className="detail-action-btn px-6 py-3 rounded-lg bg-zinc-900/90 border border-zinc-700 hover:border-[#D4FF00] text-white font-mono-code font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center space-x-2 transition-colors cursor-pointer"
                 >
                   <span>SOURCE CODE &lt;&gt;</span>
                 </a>
@@ -89,7 +146,7 @@ export default function ProjectDetail({ selectedProject, onClose }) {
             </div>
 
             {/* Section 1: THE CHALLENGE */}
-            <div className="space-y-2.5 pt-2 border-t border-zinc-800/80">
+            <div className="detail-section space-y-2.5 pt-2 border-t border-zinc-800/80">
               <div className="flex items-center space-x-2 font-display font-bold text-sm tracking-wider text-[#D4FF00] uppercase">
                 <span>— THE CHALLENGE</span>
               </div>
@@ -99,7 +156,7 @@ export default function ProjectDetail({ selectedProject, onClose }) {
             </div>
 
             {/* Section 2: THE ARCHITECTURE */}
-            <div className="space-y-3.5 pt-2 border-t border-zinc-800/80">
+            <div className="detail-section space-y-3.5 pt-2 border-t border-zinc-800/80">
               <div className="flex items-center space-x-2 font-display font-bold text-sm tracking-wider text-[#D4FF00] uppercase">
                 <span>— THE ARCHITECTURE</span>
               </div>
@@ -122,7 +179,7 @@ export default function ProjectDetail({ selectedProject, onClose }) {
             </div>
 
             {/* Testimonial Quote Box */}
-            <div className="glass-card rounded-xl p-5 md:p-6 border border-zinc-800 bg-zinc-900/60 shadow-xl space-y-3">
+            <div className="detail-quote-box glass-card rounded-xl p-5 md:p-6 border border-zinc-800 bg-zinc-900/60 shadow-xl space-y-3">
               <p className="font-mono-code text-xs sm:text-sm italic text-zinc-200 leading-relaxed">
                 "{selectedProject.quote}"
               </p>

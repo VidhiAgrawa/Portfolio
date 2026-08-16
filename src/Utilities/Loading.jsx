@@ -215,7 +215,7 @@ export default function Loading({ onComplete }) {
         </div>
 
         {/* 📜 System Log Console Box */}
-        <div
+        {/* <div
           ref={consoleRef}
           className="w-[90%] max-w-[450px] max-h-[160px] overflow-y-auto border border-[#CCFF00]/30 border-t-8 rounded-sm p-4 font-mono text-[11px] sm:text-sm text-zinc-400 space-y-1.5 backdrop-blur-md scroll-smooth bg-black/60 shadow-[0_0_15px_rgba(204,255,0,0.05)]"
         >
@@ -231,7 +231,7 @@ export default function Loading({ onComplete }) {
               {log.text}
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
 
       {/* 🚧 Bottom Status Bar */}
