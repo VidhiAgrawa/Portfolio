@@ -30,12 +30,22 @@ export default function Navbar() {
           const isActive =
             link.path === '/project'
               ? location.pathname === '/project' || location.pathname === '/projects'
-              : location.pathname === link.path;
+              : location.pathname === link.path || (link.name === 'ABOUT' && (location.pathname === '/about' || location.hash === '#about'));
+
+          const handleNavClick = (e) => {
+            if (link.name === 'ABOUT') {
+              if (location.pathname === '/') {
+                e.preventDefault();
+                document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+              }
+            }
+          };
 
           return (
             <Link
               key={link.name}
-              to={link.path}
+              to={link.name === 'ABOUT' ? '/#about' : link.path}
+              onClick={handleNavClick}
               className={`text-xs lg:text-sm font-bold tracking-widest uppercase transition-colors duration-200 ${
                 isActive ? 'text-[#D4FF00]' : 'text-zinc-300 hover:text-[#D4FF00]'
               }`}
@@ -64,13 +74,21 @@ export default function Navbar() {
             const isActive =
               link.path === '/project'
                 ? location.pathname === '/project' || location.pathname === '/projects'
-                : location.pathname === link.path;
+                : location.pathname === link.path || (link.name === 'ABOUT' && (location.pathname === '/about' || location.hash === '#about'));
+
+            const handleMobileClick = (e) => {
+              setMobileMenuOpen(false);
+              if (link.name === 'ABOUT' && location.pathname === '/') {
+                e.preventDefault();
+                document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+              }
+            };
 
             return (
               <Link
                 key={link.name}
-                to={link.path}
-                onClick={() => setMobileMenuOpen(false)}
+                to={link.name === 'ABOUT' ? '/#about' : link.path}
+                onClick={handleMobileClick}
                 className={`p-4 rounded-xl border font-mono-code text-sm font-bold tracking-widest uppercase transition-all ${
                   isActive
                     ? 'bg-[#D4FF00]/10 border-[#D4FF00] text-[#D4FF00]'

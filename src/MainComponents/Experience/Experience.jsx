@@ -232,13 +232,13 @@ export default function Experience({ isModal = false, onClose }) {
         </div>
 
         {/* Square Neon Lime Close Button */}
-        <button
+        {/* <button
           onClick={handleClose}
           className="exp-close-btn w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg bg-[#CCFF00] hover:bg-[#bce400] text-black font-extrabold flex items-center justify-center transition-transform hover:scale-110 active:scale-95 cursor-pointer shadow-[0_0_20px_rgba(204,255,0,0.3)] shrink-0 ml-4 z-50"
           title="Close / Back to Home"
         >
           <X className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
-        </button>
+        </button> */}
       </div>
 
       {/* Middle Section: 3D Magnetic Tilt Milestone Cards */}

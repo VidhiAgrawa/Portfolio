@@ -887,11 +887,22 @@ export default function SplashCursor({
       }
 
       function handleMouseMove(e) {
-        let pointer = pointers[0];
+        if (!canvas) return;
         const rect = canvas.getBoundingClientRect();
         let posX = e.clientX - rect.left;
         let posY = e.clientY - rect.top;
 
+        // ONLY trigger splash on the top hero section canvas (not when scrolling down)
+        if (
+          posX < 0 ||
+          posY < 0 ||
+          posX > rect.width ||
+          posY > rect.height
+        ) {
+          return;
+        }
+
+        let pointer = pointers[0];
         updatePointerMoveData(pointer, posX, posY);
 
         if (config.USE_NEON_THEME) {

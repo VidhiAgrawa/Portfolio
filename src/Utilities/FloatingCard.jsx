@@ -14,6 +14,7 @@ const FloatingCard = React.memo(function FloatingCard({
   initialPos = { top: '20%', left: '10%' },
   zIndex = 10,
   onBringToFront,
+  onDoubleClick,
   className = '',
 }) {
   const cardRef = useRef(null);
@@ -59,6 +60,7 @@ const FloatingCard = React.memo(function FloatingCard({
   return (
     <div
       ref={cardRef}
+      onDoubleClick={onDoubleClick}
       style={{
         position: 'absolute',
         top: initialPos.top,
@@ -67,7 +69,7 @@ const FloatingCard = React.memo(function FloatingCard({
       }}
       className={`home-card glass-card px-3 sm:px-4 py-2 sm:py-3 rounded-2xl cursor-grab active:cursor-grabbing select-none flex items-center space-x-2.5 sm:space-x-3 pointer-events-auto hover:border-[#D4FF00]/60 transition-all duration-200 shadow-[0_4px_25px_rgba(0,0,0,0.5)] group gpu-accelerated ${className}`}
     >
-      <div className="w-1.5 h-1.5 rounded-full bg-[#D4FF00] animate-pulse shrink-0" />
+      {/* <div className="w-1.5 h-1.5 rounded-full bg-[#D4FF00] animate-pulse shrink-0" /> */}
 
       <div className="flex items-center space-x-2">
         {Icon && (
@@ -86,6 +88,11 @@ const FloatingCard = React.memo(function FloatingCard({
             </div>
           )}
         </div>
+      </div>
+
+      {/* On-Hover Interactive UX Tooltip Hint */}
+      <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap bg-black/95 text-[#D4FF00] border border-[#D4FF00]/50 font-mono-code text-[9px] font-bold px-2.5 py-0.5 rounded-lg shadow-2xl z-50 flex items-center space-x-1">
+        <span>DOUBLE-CLICK TO OPEN ↗</span>
       </div>
     </div>
   );

@@ -3,9 +3,7 @@ import gsap from 'gsap';
 import { useNavigate } from 'react-router';
 
 const STEPS = [
-  { key: 'name', label: 'INPUT_NAME', prompt: 'ENTER YOUR NAME:' },
   { key: 'email', label: 'INPUT_EMAIL', prompt: 'ENTER YOUR EMAIL:' },
-  { key: 'number', label: 'INPUT_NUMBER', prompt: 'ENTER YOUR PHONE NUMBER:' },
   { key: 'message', label: 'INPUT_MESSAGE', prompt: 'ENTER YOUR MESSAGE / TRANSMISSION:' },
 ];
 
@@ -13,6 +11,7 @@ const SOCIAL_LINKS = [
   { name: 'GITHUB', url: 'https://github.com/VidhiAgrawa' },
   { name: 'LINKEDIN', url: 'https://www.linkedin.com/in/vidhiagrawa/' },
   { name: 'LEETCODE', url: 'https://leetcode.com/u/Vidhi_Agrawal_/' },
+  { name: 'EMAIL', url: 'mailto:vidhi.agrawal.tech@gmail.com' },
 ];
 
 const generateBinaryLine = () =>
@@ -52,7 +51,7 @@ export default function Terminal() {
         .fromTo(
           '.term-center',
           { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.35 },
+          { opacity: 1, y: 0, duration: 0.35, clearProps: 'transform' },
           '-=0.2'
         )
         .fromTo(
@@ -285,92 +284,103 @@ export default function Terminal() {
       </div>
 
       {/* CENTER DYNAMICALLY GROWING HORIZONTAL BAND */}
-      <div className="term-center absolute top-1/2 -translate-y-1/2 left-0 right-0 w-full bg-black/95 border-y border-[#CCFF00]/25 flex items-center justify-between px-4 sm:px-12 md:px-24 py-5 sm:py-8 z-20 shadow-2xl transition-all duration-300">
-        
-        {/* Left Side: CORE_INJECTION_PROTOCOL, Dynamic History & Input */}
-        <div className="flex-1 max-w-4xl">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-[10px] sm:text-xs font-bold text-[#CCFF00] tracking-widest uppercase pb-0.5 border-b-2 border-[#CCFF00] inline-block">
-              CORE_INJECTION_PROTOCOL
-            </span>
+      <div className="relative flex-1 flex items-center justify-center w-full z-20 my-auto">
+        <div className="term-center w-full bg-black/95 border-y border-[#CCFF00]/25 flex items-center justify-between px-4 sm:px-12 md:px-24 py-5 sm:py-8 shadow-2xl transition-all duration-300">
+          
+          {/* Left Side: CORE_INJECTION_PROTOCOL, Dynamic History & Input */}
+          <div className="flex-1 max-w-4xl">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-[10px] sm:text-xs font-bold text-[#CCFF00] tracking-widest uppercase pb-0.5 border-b-2 border-[#CCFF00] inline-block">
+                CORE_INJECTION_PROTOCOL
+              </span>
 
-            {/* Mobile-Only Current Step Badge */}
-            <span className="sm:hidden text-[9px] font-bold text-cyan-400 tracking-wider uppercase">
-              {isCompleted ? 'COMPLETE' : currentStep.label}
-            </span>
-          </div>
-
-          {/* Rendered History Items */}
-          {history.length > 0 && (
-            <div
-              ref={historyContainerRef}
-              className="space-y-1 font-mono-code text-[11px] sm:text-sm max-h-[140px] sm:max-h-[160px] overflow-y-auto pr-2 mb-2 sm:mb-3 scroll-smooth"
-            >
-              {history.map((item, idx) => (
-                <div key={idx}>
-                  {item.type === 'answer' ? (
-                    <div className="text-cyan-300">
-                      <span className="text-[#CCFF00] font-bold">&gt; {item.label}: </span>
-                      <span className="text-white font-semibold">{item.value}</span>
-                    </div>
-                  ) : item.type === 'success' ? (
-                    <div className="text-[#CCFF00] font-bold">{item.text}</div>
-                  ) : (
-                    <div className="text-zinc-400">{item.text}</div>
-                  )}
-                </div>
-              ))}
+              {/* Mobile-Only Current Step Badge */}
+              <span className="sm:hidden text-[9px] font-bold text-cyan-400 tracking-wider uppercase">
+                {isCompleted ? 'COMPLETE' : currentStep.label}
+              </span>
             </div>
-          )}
 
-          {/* ACTIVE TERMINAL INPUT PROMPT */}
-          {!isCompleted ? (
-            <form onSubmit={handleFormSubmit} className="flex items-center space-x-2 sm:space-x-3">
-              <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
-                <span className="text-xl sm:text-2xl text-[#CCFF00] font-mono font-bold select-none">┊</span>
-                <span className="text-2xl sm:text-4xl font-black text-[#CCFF00]">&gt;</span>
+            {/* Rendered History Items */}
+            {history.length > 0 && (
+              <div
+                ref={historyContainerRef}
+                className="space-y-1 font-mono-code text-[11px] sm:text-sm max-h-[140px] sm:max-h-[160px] overflow-y-auto pr-2 mb-2 sm:mb-3 scroll-smooth"
+              >
+                {history.map((item, idx) => (
+                  <div key={idx}>
+                    {item.type === 'answer' ? (
+                      <div className="text-cyan-300">
+                        <span className="text-[#CCFF00] font-bold">&gt; {item.label}: </span>
+                        <span className="text-white font-semibold">{item.value}</span>
+                      </div>
+                    ) : item.type === 'success' ? (
+                      <div className="text-[#CCFF00] font-bold">{item.text}</div>
+                    ) : (
+                      <div className="text-zinc-400">{item.text}</div>
+                    )}
+                  </div>
+                ))}
               </div>
+            )}
 
-              <input
-                ref={inputRef}
-                type={
-                  currentStep.key === 'email'
-                    ? 'email'
-                    : currentStep.key === 'number'
-                    ? 'tel'
-                    : 'text'
-                }
-                value={currentInput}
-                onChange={(e) => setCurrentInput(e.target.value)}
-                placeholder={currentStep.prompt}
-                className="w-full bg-transparent border-none outline-none text-[#CCFF00] font-mono-code text-base sm:text-2xl md:text-3xl font-bold tracking-wider caret-[#CCFF00] placeholder-zinc-700"
-                autoFocus
-              />
-            </form>
-          ) : (
-            <div className="flex flex-wrap gap-2 sm:gap-3 pt-2">
-              {SOCIAL_LINKS.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-3 py-1.5 sm:px-4 sm:py-2 rounded border border-[#CCFF00]/60 bg-black text-[#CCFF00] hover:bg-[#CCFF00] hover:text-black font-mono-code text-[10px] sm:text-xs font-bold tracking-widest uppercase transition-colors shadow-lg"
-                >
-                  {link.name} ↗
-                </a>
-              ))}
-            </div>
-          )}
-        </div>
+            {/* ACTIVE TERMINAL INPUT PROMPT */}
+            {!isCompleted ? (
+              <form onSubmit={handleFormSubmit} className="flex items-center space-x-2 sm:space-x-3">
+                <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
+                  <span className="text-xl sm:text-2xl text-[#CCFF00] font-mono font-bold select-none">┊</span>
+                  <span className="text-2xl sm:text-4xl font-black text-[#CCFF00]">&gt;</span>
+                </div>
 
-        {/* Right Side: STATUS & INPUT STEP NAME Indicator (Desktop) */}
-        <div className="hidden sm:block text-right pl-6 shrink-0">
-          <div className="text-xs font-bold text-[#CCFF00]/80 tracking-widest uppercase mb-1">
-            STATUS: {isCompleted ? 'DISPATCHED' : 'AWAITING'}
+                <input
+                  ref={inputRef}
+                  type={
+                    currentStep.key === 'email'
+                      ? 'email'
+                      : currentStep.key === 'number'
+                      ? 'tel'
+                      : 'text'
+                  }
+                  value={currentInput}
+                  onChange={(e) => setCurrentInput(e.target.value)}
+                  placeholder={currentStep.prompt}
+                  className="w-full bg-transparent border-none outline-none text-[#CCFF00] font-mono-code text-base sm:text-2xl md:text-3xl font-bold tracking-wider caret-[#CCFF00] placeholder-zinc-700"
+                  autoFocus
+                />
+              </form>
+            ) : (
+              <div className="flex flex-wrap gap-2 sm:gap-3 pt-2">
+                {SOCIAL_LINKS.map((link) => {
+                  const label = link.name || link.email || 'EMAIL';
+                  const rawUrl = link.url || '';
+                  const href = rawUrl.includes('@') && !rawUrl.startsWith('mailto:')
+                    ? `mailto:${rawUrl}`
+                    : rawUrl;
+                  const isMail = href.startsWith('mailto:');
+
+                  return (
+                    <a
+                      key={label}
+                      href={href}
+                      target={isMail ? '_self' : '_blank'}
+                      rel="noreferrer"
+                      className="px-3 py-1.5 sm:px-4 sm:py-2 rounded border border-[#CCFF00]/60 bg-black text-[#CCFF00] hover:bg-[#CCFF00] hover:text-black font-mono-code text-[10px] sm:text-xs font-bold tracking-widest uppercase transition-colors shadow-lg"
+                    >
+                      {label} ↗
+                    </a>
+                  );
+                })}
+              </div>
+            )}
           </div>
-          <div className="text-xl sm:text-2xl font-black text-[#CCFF00] tracking-wider uppercase">
-            {isCompleted ? 'PROTOCOL_COMPLETE' : currentStep.label}
+
+          {/* Right Side: STATUS & INPUT STEP NAME Indicator (Desktop) */}
+          <div className="hidden sm:block text-right pl-6 shrink-0">
+            <div className="text-xs font-bold text-[#CCFF00]/80 tracking-widest uppercase mb-1">
+              STATUS: {isCompleted ? 'DISPATCHED' : 'AWAITING'}
+            </div>
+            <div className="text-xl sm:text-2xl font-black text-[#CCFF00] tracking-wider uppercase">
+              {isCompleted ? 'PROTOCOL_COMPLETE' : currentStep.label}
+            </div>
           </div>
         </div>
       </div>

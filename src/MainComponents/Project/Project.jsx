@@ -24,7 +24,7 @@ const PROJECTS_DATA = [
     title: 'EnzoSkills',
     titlePart1: 'ENZO',
     titlePart2: 'SKILLS',
-    category: ['FULLSTACK', 'AI'],
+    category: 'MAJOR',
     subtitle: 'Skill Development Platform',
     description:
       'A comprehensive and interactive platform designed to facilitate skill development and collaborative learning environments.',
@@ -67,7 +67,7 @@ const PROJECTS_DATA = [
     title: 'ContriZee',
     titlePart1: 'CONTRI',
     titlePart2: 'ZEE',
-    category: 'OPEN SOURCE',
+    category: 'EXTRAS',
     subtitle: 'Contribution Tracking System',
     description:
       'A streamlined platform designed to track, manage, and gamify open-source contributions for developer communities.',
@@ -110,7 +110,7 @@ const PROJECTS_DATA = [
     title: 'SIPVision',
     titlePart1: 'SIP',
     titlePart2: 'VISION',
-    category: 'AI',
+    category: 'MAJOR',
     subtitle: 'Computer Vision Telemetry',
     description:
       'AI-powered Computer Vision & Real-time Telemetry Suite processing live video feeds with sub-30ms object detection and analytics.',
@@ -153,7 +153,7 @@ const PROJECTS_DATA = [
     title: 'CraftRume',
     titlePart1: 'CRAFT',
     titlePart2: 'RUME',
-    category: 'UTILITY',
+    category: 'EXTRAS',
     subtitle: 'Professional Resume Builder',
     description:
       'A dynamic and intuitive resume builder designed to help users craft professional and visually appealing resumes with ease.',
@@ -193,10 +193,10 @@ const PROJECTS_DATA = [
   },
 ];
 
-const CATEGORIES = ['ALL', 'FULLSTACK', 'OPEN SOURCE', 'AI', 'UTILITY'];
+const CATEGORIES = ['MAJOR', 'EXTRAS', 'GAMEZONE'];
 
 export default function Project() {
-  const [activeCategory, setActiveCategory] = useState('ALL');
+  const [activeCategory, setActiveCategory] = useState('MAJOR');
   const [selectedProject, setSelectedProject] = useState(null);
   const containerRef = useRef(null);
 
