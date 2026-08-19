@@ -14,7 +14,7 @@
     <strong>A high-impact, interactive developer portfolio blurring the boundary between software engineering and digital art.</strong>
   </p>
 
-  [🌐 Explore Live Portfolio](#) • [💻 View Projects](#-featured-projects) • [📬 Get In Touch](#-contact--connect)
+  [🌐 Explore Live Portfolio](https://vidhi-agrawal.vercel.app/) • [💻 View Projects](#-featured-projects) • [📬 Get In Touch](#-contact--connect)
 
 </div>
 
